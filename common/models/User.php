@@ -6,6 +6,8 @@ use yii\base\NotSupportedException;
 use yii\behaviors\TimestampBehavior;
 use yii\db\ActiveRecord;
 use yii\web\IdentityInterface;
+use yii\filters\AccessControl;
+use yii\filters\VerbFilter;
 
 /**
  * User model
@@ -45,8 +47,34 @@ class User extends ActiveRecord implements IdentityInterface
      */
     public function behaviors()
     {
+        /*
         return [
             TimestampBehavior::className(),
+        ];
+        */
+        return [
+            'access' => [
+                'class' => AccessControl::className(),
+                'only' => ['logout', 'signup','login'],//这里一定要加
+                'rules' => [
+                    [
+                        'actions' => ['login','captcha'],
+                        'allow' => true,
+                        'roles' => ['?'],
+                    ],
+                    [
+                        'actions'=>['logout','edit','add','del','index','users','thumb','upload','cutpic','follow','nofollow'],
+                        'allow' => true,
+                        'roles' => ['@'],
+                    ],
+                ],
+            ],
+            'verbs' => [
+                'class' => VerbFilter::className(),
+                'actions' => [
+                    'logout' => ['post'],
+                ],
+            ],
         ];
     }
 

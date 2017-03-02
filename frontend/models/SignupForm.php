@@ -12,8 +12,9 @@ class SignupForm extends Model
 {
     public $username;
     public $email;
-    public $password_hash;
-
+    public $password;
+    public $repassword;
+    public $verifyCode;
     /**
      * @inheritdoc
      */
@@ -30,8 +31,12 @@ class SignupForm extends Model
             ['email', 'email'],
             ['email', 'unique', 'targetClass' => '\common\models\User', 'message' => '邮箱已存在'],
 
-            ['password_hash', 'required','message'=>'密码不能为空'],
-            ['password_hash', 'string', 'min' => 6],
+            [['password','repassword'], 'required','message'=>'密码不能为空'],
+            [['password','repassword'], 'string', 'min' => 6,'tooShort' => '密码至少填写6位'],
+            ['repassword', 'compare', 'compareAttribute' => 'password','message'=>'两次输入的密码不一致！'],
+
+            ['verifyCode', 'required','message'=>'验证码不能为空'],
+            ['verifyCode', 'captcha'],
         ];
     }
 
@@ -42,17 +47,18 @@ class SignupForm extends Model
      */
     public function signup()
     {
+        // 调用validate方法对表单数据进行验证，验证规则参考上面的rules方法
         if ($this->validate()) {
             $user = new User();
             $user->username = $this->username;
             $user->email = $this->email;
-            $user->setPassword($this->password_hash);
+            $user->setPassword($this->password);
             $user->generateAuthKey();
             $user->create_at = time();
-            $user->save();
+            $user->save(false);
             return $user;
+        }else{
+            return null;
         }
-
-        return null;
     }
 }
