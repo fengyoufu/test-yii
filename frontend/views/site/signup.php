@@ -1,14 +1,21 @@
 <?php
 use yii\helpers\Html;
 use yii\bootstrap\ActiveForm;
-
+use frontend\assets\AppAsset;
+/*
+ * *
+ * 自定义CSS,JS加载
+ */
+AppAsset::register($this);
+AppAsset::addCss($this,'@web/css/signup.css');
+AppAsset::addScript($this,'@web/js/test.js');
 /* @var $this yii\web\View */
 /* @var $form yii\bootstrap\ActiveForm */
 /* @var $model \frontend\models\SignupForm */
-
 $this->title = '注册';
 $this->params['breadcrumbs'][] = $this->title;
 ?>
+
 <div class="site-signup">
     <h1><?= Html::encode($this->title) ?></h1>
 
@@ -17,7 +24,7 @@ $this->params['breadcrumbs'][] = $this->title;
     <div class="row">
         <div class="col-lg-5">
             <?php $form = ActiveForm::begin(['id' => 'form-signup']); ?>
-                <?= $form->field($model, 'username',['labelOptions' => ['label' => '用户名']]) ?>
+                <?= $form->field($model, 'username',['labelOptions' => ['label' => '用户名','class' => 'signup-username']]) ?>
                 <?= $form->field($model, 'email',['labelOptions' => ['label' => '邮箱']]) ?>
                 <?= $form->field($model, 'password_hash',['labelOptions' => ['label' => '密码']])->passwordInput() ?>
                 <div class="form-group">
