@@ -12,7 +12,7 @@ class SignupForm extends Model
 {
     public $username;
     public $email;
-    public $password;
+    public $password_hash;
 
     /**
      * @inheritdoc
@@ -21,17 +21,17 @@ class SignupForm extends Model
     {
         return [
             ['username', 'filter', 'filter' => 'trim'],
-            ['username', 'required'],
-            ['username', 'unique', 'targetClass' => '\common\models\User', 'message' => 'This username has already been taken.'],
+            ['username', 'required','message'=>'用户名不能为空'],
+            ['username', 'unique', 'targetClass' => '\common\models\User', 'message' => '用户名已存在'],
             ['username', 'string', 'min' => 2, 'max' => 255],
 
             ['email', 'filter', 'filter' => 'trim'],
-            ['email', 'required'],
+            ['email', 'required','message'=>'邮箱不能为空'],
             ['email', 'email'],
-            ['email', 'unique', 'targetClass' => '\common\models\User', 'message' => 'This email address has already been taken.'],
+            ['email', 'unique', 'targetClass' => '\common\models\User', 'message' => '邮箱已存在'],
 
-            ['password', 'required'],
-            ['password', 'string', 'min' => 6],
+            ['password_hash', 'required','message'=>'密码不能为空'],
+            ['password_hash', 'string', 'min' => 6],
         ];
     }
 
@@ -46,7 +46,7 @@ class SignupForm extends Model
             $user = new User();
             $user->username = $this->username;
             $user->email = $this->email;
-            $user->setPassword($this->password);
+            $user->setPassword($this->password_hash);
             $user->generateAuthKey();
             $user->create_at = time();
             $user->save();
