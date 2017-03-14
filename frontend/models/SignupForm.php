@@ -24,7 +24,7 @@ class SignupForm extends Model
             ['username', 'filter', 'filter' => 'trim'],
             ['username', 'required','message'=>'用户名不能为空'],
             ['username', 'unique', 'targetClass' => '\common\models\User', 'message' => '用户名已存在'],
-            ['username', 'string', 'min' => 2, 'max' => 255],
+            ['username', 'string', 'min' => 2, 'max' => 20],
 
             ['email', 'filter', 'filter' => 'trim'],
             ['email', 'required','message'=>'邮箱不能为空'],
@@ -55,8 +55,9 @@ class SignupForm extends Model
             $user->setPassword($this->password);
             $user->generateAuthKey();
             $user->create_at = time();
-            $user->save(false);
-            return $user;
+            //$user->save(false);
+            //return $user;
+            return $user->save() ? $user : null;
         }else{
             return null;
         }
